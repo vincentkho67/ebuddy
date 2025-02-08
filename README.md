@@ -1,84 +1,182 @@
-# Turborepo starter
+# EBUDDY Technical Test Solution
 
-This Turborepo starter is maintained by the Turborepo core team.
+This monorepo contains the implementation of the EBUDDY technical test, combining both frontend and backend solutions using Turborepo.
 
-## Using this example
+## Prerequisites
 
-Run the following command:
+- Node.js v20 or higher
+- npm v10.8.2 or higher
+- Firebase CLI
+- Firebase Emulator Suite
 
-```sh
-npx create-turbo@latest
-```
-
-## What's inside?
-
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## Project Structure
 
 ```
-cd my-turborepo
-pnpm build
+ebuddy-app/
+├── apps/
+│   ├── backend-repo/    # Express.js backend
+│   └── frontend-repo/   # Next.js frontend
+├── packages/
+│   ├── shared/          # Shared types and utilities
+│   ├── ui/             # Shared UI components
+│   ├── eslint-config/  # Shared ESLint configurations
+│   └── typescript-config/ # Shared TypeScript configurations
+└── package.json
 ```
 
-### Develop
+## Getting Started
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
+1. Install Firebase CLI if you haven't:
+```bash
+npm install -g firebase-tools
 ```
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+2. Install dependencies from the root directory:
+```bash
+npm install
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+3. Set up environment variables:
+   - Copy `.env-example` to `.env` in both `apps/frontend-repo` and `apps/backend-repo`
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## Running the Project
 
+### Development Mode (Running Everything)
+
+To run both frontend and backend with Firebase emulators:
+
+```bash
+npm run dev:all
 ```
-npx turbo link
+
+This will start:
+- Frontend at http://localhost:3000
+- Backend at http://localhost:5001
+- Firebase Auth Emulator at http://localhost:9099
+- Firebase Functions Emulator
+- Firebase Firestore Emulator
+
+### Running Individual Parts
+
+Backend only:
+```bash
+turbo dev --filter=backend-repo
 ```
 
-## Useful Links
+Frontend only:
+```bash
+turbo dev --filter=frontend-repo
+```
 
-Learn more about the power of Turborepo:
+## Testing the Application
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+1. Start the application in development mode:
+```bash
+npm run dev:all
+```
+
+2. Access the frontend at http://localhost:3000
+
+3. Login using test credentials:
+```
+Email: test@example.com
+Password: password123
+```
+
+4. Test the user management functionality:
+   - View user data
+   - Update user information
+   - Check real-time updates
+
+### Seeding Test Data
+
+1. Start The Application
+
+2. In another terminal, run the seeding script:
+```bash
+npm run seed
+```
+
+This will create three test users:
+- User 1: High activity, recent engagement
+- User 2: High activity, less recent engagement
+- User 3: Lower activity, less recent engagement
+
+## Build
+
+To build all apps and packages:
+
+```bash
+npm run build
+```
+
+## Available Scripts
+
+- `npm run dev:all` - Run all services in development mode
+- `npm run build` - Build all applications
+- `npm run lint` - Lint all applications
+- `npm run format` - Format code using Prettier
+- `npm run start` - Start all applications in production mode
+
+## Project Features
+
+### Backend (Express.js)
+- Firebase SDK integration
+- User management endpoints
+- Authentication middleware
+- Firestore database integration
+
+### Frontend (Next.js)
+- Material-UI integration
+- Redux state management
+- Firebase authentication
+- Responsive design
+- User management interface
+
+### Shared Features
+- TypeScript configurations
+- ESLint configurations
+- Shared types and interfaces
+- Common UI components
+
+## Testing Endpoints
+
+You can test the API endpoints using curl or Postman:
+
+```bash
+# Fetch user data
+curl -H "Authorization: Bearer test-token" http://localhost:5001/ebuddy-e0146/us-central1/api/users/user1
+
+# Update user data
+curl -X PATCH \
+  -H "Authorization: Bearer test-token" \
+  -H "Content-Type: application/json" \
+  -d '{"totalAverageWeightRatings": 4.5}' \
+  http://localhost:5001/ebuddy-e0146/us-central1/api/users/user1
+```
+
+## Troubleshooting
+
+1. If you encounter EADDRINUSE errors, make sure no other service is running on the required ports:
+   - 3000 (Frontend)
+   - 5001 (Backend)
+   - 9099 (Firebase Auth)
+   - 8080 (Firestore)
+
+2. If the Firebase emulators fail to start:
+   ```bash
+   firebase emulators:start --clear
+   ```
+
+3. To clear all emulator data:
+   ```bash
+   firebase emulators:start --clear
+   ```
+
+## Additional Notes
+
+- The project uses Firebase Emulators for local development
+- Authentication is handled through Firebase Auth
+- The frontend implements Material-UI for responsive design
+- State management is handled through Redux
+- API calls are abstracted in the frontend's api directory
