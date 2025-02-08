@@ -2,16 +2,17 @@
 
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useRouter,  } from 'next/navigation';
-import { Box, Container, Typography, CircularProgress, Button } from '@mui/material';
+import { useParams, useRouter } from 'next/navigation';
+import { Box, Container, Typography, CircularProgress } from '@mui/material';
 import { RootState } from '@/store';
 import { fetchUserStart, fetchUserSuccess, fetchUserFailure } from '@/store/slices/userSlice';
 import { userApi } from '@/api/userApi';
 import { UserDetailCard } from '@/components/molecules/UserDetailCard';
+import { UserDetailHeader } from '@/components/molecules/UserDetailHeader';
 
 export default function UserDetailPage() {
   const { userId } = useParams();
-  const navigate = useRouter();
+  const router = useRouter();
   const dispatch = useDispatch();
   const { data: user, loading, error } = useSelector((state: RootState) => state.user);
   const { token } = useSelector((state: RootState) => state.auth);
@@ -19,7 +20,6 @@ export default function UserDetailPage() {
   useEffect(() => {
     const fetchUserData = async () => {
       if (!token || !userId) return;
-      
       dispatch(fetchUserStart());
       try {
         const response = await userApi.fetchUserData(userId as string, token);
@@ -30,14 +30,13 @@ export default function UserDetailPage() {
         dispatch(fetchUserFailure(error instanceof Error ? error.message : 'Failed to fetch user data'));
       }
     };
-
     fetchUserData();
   }, [dispatch, token, userId]);
 
   if (loading) {
     return (
       <Container>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
           <CircularProgress />
         </Box>
       </Container>
@@ -62,10 +61,11 @@ export default function UserDetailPage() {
 
   return (
     <Container>
-      <Box py={4}>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Button variant="outlined" onClick={() => navigate.back()}>Back</Button>
-        </Box>
+      <Box sx={{ py: 4 }}>
+        <UserDetailHeader 
+          onBack={() => router.back()} 
+          userId={user.id} 
+        />
         <UserDetailCard user={user} />
       </Box>
     </Container>

@@ -39,7 +39,6 @@ async function seedUsers() {
     console.log('Starting to seed users...');
     console.log('Connected to Firestore at:', process.env.FIRESTORE_EMULATOR_HOST);
     
-    // First verify if collection exists
     const beforeSnapshot = await db.collection('USERS').get();
     console.log('Current users in database:', beforeSnapshot.size);
     
@@ -59,7 +58,6 @@ async function seedUsers() {
     const afterSnapshot = await db.collection('USERS').get();
     console.log(`Total users after seeding: ${afterSnapshot.size}`);
     
-    // Log each document
     afterSnapshot.forEach(doc => {
       console.log('Seeded document:', doc.id, doc.data());
     });

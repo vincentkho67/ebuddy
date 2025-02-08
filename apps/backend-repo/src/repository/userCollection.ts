@@ -5,15 +5,15 @@ import { logger } from 'firebase-functions';
 export class UserRepository {
   private collection = db.collection('USERS');
 
-  async getAllUsers(pageSize: number = 10, lastDoc?: any): Promise<{ users: User[], lastDoc: any, total: number }> {
+  async getAllUsers(pageSize: number = 10, lastDoc?: any) {
     try {
       const countSnapshot = await this.collection.count().get();
       const total = countSnapshot.data().count;
 
       let query = this.collection
-        .orderBy('totalAverageWeightRatings', 'desc')
-        .orderBy('numberOfRents', 'desc')
-        .orderBy('recentlyActive', 'desc')
+        .orderBy('totalAverageWeightRatings', 'desc')  
+        .orderBy('numberOfRents', 'desc')              
+        .orderBy('recentlyActive', 'desc')          
         .limit(pageSize);
 
       if (lastDoc) {
@@ -25,7 +25,7 @@ export class UserRepository {
 
       const snapshot = await query.get();
       const users: User[] = [];
-
+      
       snapshot.forEach(doc => {
         users.push({
           id: doc.id,
@@ -33,8 +33,8 @@ export class UserRepository {
         });
       });
 
-      const lastVisible = snapshot.docs.length > 0 ? 
-        snapshot.docs[snapshot.docs.length - 1].id : 
+      const lastVisible = snapshot.docs.length > 0 ?
+        snapshot.docs[snapshot.docs.length - 1].id :
         null;
 
       return {
