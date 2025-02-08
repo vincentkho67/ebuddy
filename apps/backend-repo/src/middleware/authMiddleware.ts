@@ -18,17 +18,16 @@ export const authMiddleware = async (
     }
 
     const token = authHeader.split('Bearer ')[1];
-    
-    if (process.env.FUNCTIONS_EMULATOR) {
+
+    if (process.env.FUNCTIONS_EMULATOR || process.env.NODE_ENV === 'development') {
       if (token === 'test-token') {
+        logger.info('Using test token in emulator/development mode');
         return next();
       }
-    } else {
-      await auth.verifyIdToken(token);
-      return next();
     }
 
-    throw new Error('Invalid token');
+    await auth.verifyIdToken(token);
+    return next();
   } catch (error) {
     logger.error('Auth error:', error);
     return res.status(401).json({
